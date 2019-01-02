@@ -102,3 +102,11 @@ venv.bak/
 
 # mypy
 .mypy_cache/
+
+# Data Cahe
+data/secom*
+
+# OSX Files
+.DS_Store
+
+*.swp
