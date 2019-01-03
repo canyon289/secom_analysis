@@ -26,8 +26,13 @@ def load_secom_features(data_path, filename="secom.data"):
     return secom_x
 
 
-def load_secom_labels(data_path, filename="secom_labels.data", feature_engineer=True):
+def load_secom_labels(data_path, filename="secom_labels.data", feature_engineer=True,
+                      human_labels=False):
     """Loads secom_labels.data and optionally provides feature engineering
+
+    Target label (-1,1) is replaced with values below depending on human_labels argument
+         1: Fail: 0
+        -1: Pass: 1
 
     Parameters
     ----------
@@ -40,6 +45,8 @@ def load_secom_labels(data_path, filename="secom_labels.data", feature_engineer=
     feature_engineer: bool, opt
         Perform initial feature engineer. Drops unneeded columns. Defaults to True
 
+    human_labels: bool, opt
+        If True replace with {-1:"Pass", 1:"Fail"}, else replace with {1:0,-1:1}
 
     Returns
     -------
@@ -56,8 +63,15 @@ def load_secom_labels(data_path, filename="secom_labels.data", feature_engineer=
     secom_y["datetime"] = pd.to_datetime(secom_y["datetime"])
 
     if feature_engineer is True:
+        # Coerce string into date time
         secom_y["datetime_ordinal_eng"] = secom_y["datetime"].apply(lambda d: d.toordinal())
         secom_y = secom_y.drop("datetime", axis=1)
+
+    if human_labels is True:
+        secom_y["target"] = secom_y["target"].replace({-1: "Pass", 1: "Fail"})
+
+    else:
+        secom_y["target"] = secom_y["target"].replace({-1: 1, 1: 0})
 
     secom_y = secom_y.add_prefix("s_label_")
 
@@ -90,6 +104,8 @@ def load_vendor_json(data_path, filename="vendordata.json", feature_engineer=Tru
         secom_json["datetime_ordinal"] = pd.to_datetime(secom_json["datetime"]) \
                                          .apply(lambda d: d.toordinal())
 
+    secom_json = secom_json.add_prefix("json_")
+    secom_json.columns = secom_json.columns.str.replace(" ", "_")
     return secom_json
 
 
