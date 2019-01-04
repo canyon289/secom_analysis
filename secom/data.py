@@ -65,6 +65,8 @@ def load_secom_labels(data_path, filename="secom_labels.data", feature_engineer=
     if feature_engineer is True:
         # Coerce string into date time
         secom_y["datetime_ordinal_eng"] = secom_y["datetime"].apply(lambda d: d.toordinal())
+        secom_y = pd.concat([secom_y, pd.get_dummies(secom_y["datetime"].dt.month, prefix="month_")]
+                            , axis=1, sort=False)
         secom_y = secom_y.drop("datetime", axis=1)
 
     if human_labels is True:
@@ -101,8 +103,8 @@ def load_vendor_json(data_path, filename="vendordata.json", feature_engineer=Tru
     secom_json = pd.read_json(os.path.join(data_path, filename)).sort_index()
 
     if feature_engineer is True:
-        secom_json["datetime_ordinal"] = pd.to_datetime(secom_json["datetime"]) \
-                                         .apply(lambda d: d.toordinal())
+        secom_json = secom_json.drop("datetime", axis=1)
+        secom_json = pd.get_dummies(secom_json)
 
     secom_json = secom_json.add_prefix("json_")
     secom_json.columns = secom_json.columns.str.replace(" ", "_")
