@@ -32,8 +32,8 @@ def test_load_vendor_json(data_path):
 
 
 def test_combine_data_sources(data_path):
-    secom_data = data.load_secom_labels(data_path)
-    secom_labels = data.load_vendor_json(data_path)
-    vendor_data = data.load_secom_features(data_path)
-    df = data.combine_data_sources(secom_data, secom_labels, vendor_data)
+    secom_labels = data.load_secom_labels(data_path)
+    secom_features = data.load_secom_features(data_path)
+    vendor_data = data.load_vendor_json(data_path)
+    df = data.combine_data_sources(secom_features, secom_labels, vendor_data)
     assert df.shape[0] == 1567

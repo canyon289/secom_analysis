@@ -111,12 +111,12 @@ def load_vendor_json(data_path, filename="vendordata.json", feature_engineer=Tru
     return secom_json
 
 
-def combine_data_sources(secom_data, secom_labels, vendor_data):
+def combine_data_sources(secom_features, secom_labels, vendor_data):
     """Merge all three dataframes together. Return data and labels as separate dataframes
 
     Parameters
     ----------
-    secom_data: pd.DataFrame
+    secom_features: pd.DataFrame
     secom_labels: pd.DataFrame
     vendor_data: pd.DataFrame
 
@@ -126,7 +126,7 @@ def combine_data_sources(secom_data, secom_labels, vendor_data):
 
     """
 
-    merged_df = secom_data.merge(secom_labels, left_index=True, right_index=True) \
+    merged_df = secom_features.merge(secom_labels, left_index=True, right_index=True) \
                             .merge(vendor_data, left_index=True, right_index=True)
 
     return merged_df
